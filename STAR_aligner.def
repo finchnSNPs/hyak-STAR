@@ -1,0 +1,32 @@
+Bootstrap: docker
+From: debian:stable-slim
+
+%labels
+	Author dobin@cshl.edu (dockerfile) & finchkn@uw.edu (def file)
+	Version v2.7.11b
+
+%environment
+	export PATH=/home/bin:${PATH}
+
+%post
+	set -ex
+	apt-get update && \
+	apt-get install -y --no-install-recommends gcc && \
+	apt-get install -y --no-install-recommends g++ && \
+	apt-get install -y --no-install-recommends make && \
+	apt-get install -y --no-install-recommends wget && \
+	apt-get install -y --no-install-recommends zlib1g-dev && \
+	apt-get install -y --no-install-recommends unzip && \
+	apt-get install -y vim-common && \
+	apt-get clean && \
+	g++ --version && \
+	cd /home && \
+	wget --no-check-certificate https://github.com/alexdobin/STAR/archive/2.7.11b.zip && \
+	unzip 2.7.11b.zip && \
+	cd STAR-2.7.11b/source && \
+	make STARstatic && \
+	mkdir /home/bin && \
+	cp STAR /home/bin && \
+	cd /home && \
+	'rm' -rf STAR-2.7.11b && \
+	apt-get --purge autoremove -y gcc g++ make wget zlib1g-dev unzip
